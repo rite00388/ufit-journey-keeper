@@ -72,6 +72,38 @@ const CalorieTracker = () => {
     { name: "Burned", value: caloriesBurned, color: "#ef4444" },
   ];
 
+  // Custom label renderer
+  const renderCustomizedLabel = (props: any) => {
+    const { viewBox } = props;
+    const centerX = viewBox ? viewBox.cx : 0;  
+    const centerY = viewBox ? viewBox.cy : 0;
+    
+    return (
+      <>
+        <text
+          x={centerX}
+          y={centerY - 5}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          className="text-lg font-bold"
+          fill="#333333"
+        >
+          {getNetCalories()}
+        </text>
+        <text
+          x={centerX}
+          y={centerY + 15}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          className="text-xs"
+          fill="#8E9196"
+        >
+          Net Calories
+        </text>
+      </>
+    );
+  };
+
   return (
     <div className="ufit-card space-y-6">
       <div className="flex justify-between items-center">
@@ -102,36 +134,7 @@ const CalorieTracker = () => {
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
-                <Label
-                  content={({ viewBox }) => {
-                    if (!viewBox) return null;
-                    const { cx, cy } = viewBox;
-                    return (
-                      <>
-                        <text
-                          x={cx}
-                          y={cy - 5}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className="text-lg font-bold"
-                          fill="#333333"
-                        >
-                          {getNetCalories()}
-                        </text>
-                        <text
-                          x={cx}
-                          y={cy + 15}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className="text-xs"
-                          fill="#8E9196"
-                        >
-                          Net Calories
-                        </text>
-                      </>
-                    );
-                  }}
-                />
+                <Label content={renderCustomizedLabel} />
               </Pie>
             </PieChart>
           </ResponsiveContainer>

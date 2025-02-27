@@ -155,7 +155,7 @@ const BMIForm = () => {
             <span className="text-sm text-ufit-muted">25</span>
             <span className="text-sm text-ufit-muted">40+</span>
           </div>
-          <Progress value={getBMIProgressValue()} className="h-2" indicatorColor={getBMIColor()} />
+          <Progress value={getBMIProgressValue()} className="h-2" style={{ backgroundColor: "#e5e7eb", "--tw-progress-fill-color": getBMIColor() } as React.CSSProperties} />
           <div className="text-center space-y-1">
             <div className="text-3xl font-bold" style={{ color: getBMIColor() }}>
               {result.bmi}
