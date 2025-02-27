@@ -2,13 +2,13 @@
 import Navbar from "@/components/Navbar";
 import BMIForm from "@/components/BMIForm";
 import { useUser } from "@/components/UserContext";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const BMICalculator = () => {
   const { isAuthenticated } = useUser();
 
   if (!isAuthenticated) {
-    return <Redirect to="/login" />;
+    return <Navigate to="/login" />;
   }
 
   return (
@@ -21,4 +21,15 @@ const BMICalculator = () => {
           
           <div className="mb-8">
             <p className="text-ufit-secondary mb-4">
-              Body Mass Index (BMI) is a measurement
+              Body Mass Index (BMI) is a measurement of body fat based on height and weight that applies to adult men and women.
+            </p>
+          </div>
+          
+          <BMIForm />
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default BMICalculator;
