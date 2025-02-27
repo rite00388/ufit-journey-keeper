@@ -11,42 +11,42 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface ExerciseProps {
+interface Exercise {
   id: string;
-  title: string;
-  type: string;
-  duration: number;
-  caloriesBurned: number;
+  name: string;
+  category: string;
+  muscle: string;
+  equipment: string;
   difficulty: "beginner" | "intermediate" | "advanced";
+  instructions: string;
   imageUrl: string;
-  description: string;
-  steps: string[];
+}
+
+interface ExerciseCardProps {
+  exercise: Exercise;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
 }
 
 const ExerciseCard = ({
-  id,
-  title,
-  type,
-  duration,
-  caloriesBurned,
-  difficulty,
-  imageUrl,
-  description,
-  steps,
-}: ExerciseProps) => {
-  const [saved, setSaved] = useState(false);
-
+  exercise,
+  isFavorite,
+  onToggleFavorite,
+}: ExerciseCardProps) => {
   const getDifficultyColor = () => {
-    if (difficulty === "beginner") return "bg-green-100 text-green-800";
-    if (difficulty === "intermediate") return "bg-yellow-100 text-yellow-800";
+    if (exercise.difficulty === "beginner") return "bg-green-100 text-green-800";
+    if (exercise.difficulty === "intermediate") return "bg-yellow-100 text-yellow-800";
     return "bg-red-100 text-red-800";
   };
 
-  const toggleSave = (e: React.MouseEvent) => {
+  const handleSaveClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSaved(!saved);
+    onToggleFavorite();
   };
+
+  // Convert instructions text to steps array for rendering
+  const instructionSteps = exercise.instructions.split('. ').filter(step => step.trim() !== '');
 
   return (
     <Dialog>
@@ -54,17 +54,17 @@ const ExerciseCard = ({
         <div className="ufit-card cursor-pointer h-full flex flex-col">
           <div className="relative">
             <img
-              src={imageUrl}
-              alt={title}
+              src={exercise.imageUrl}
+              alt={exercise.name}
               className="w-full h-48 object-cover rounded-t-xl"
             />
             <Button
               variant="ghost"
               size="icon"
               className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white"
-              onClick={toggleSave}
+              onClick={handleSaveClick}
             >
-              {saved ? (
+              {isFavorite ? (
                 <Bookmark className="h-5 w-5 text-ufit-accent" fill="#9b87f5" />
               ) : (
                 <Bookmark className="h-5 w-5 text-ufit-muted" />
@@ -74,23 +74,23 @@ const ExerciseCard = ({
               <span
                 className={`text-xs font-medium px-2.5 py-1 rounded-full ${getDifficultyColor()}`}
               >
-                {difficulty}
+                {exercise.difficulty}
               </span>
             </div>
           </div>
 
           <div className="flex-1 p-4">
-            <h3 className="font-medium text-lg text-ufit-primary mb-1">{title}</h3>
-            <p className="text-ufit-muted text-sm mb-3">{type}</p>
+            <h3 className="font-medium text-lg text-ufit-primary mb-1">{exercise.name}</h3>
+            <p className="text-ufit-muted text-sm mb-3">{exercise.muscle}</p>
 
             <div className="flex justify-between text-sm">
               <div className="flex items-center text-ufit-secondary">
                 <Clock className="h-4 w-4 mr-1" />
-                {duration} min
+                10 min
               </div>
               <div className="flex items-center text-ufit-secondary">
                 <Flame className="h-4 w-4 mr-1" />
-                {caloriesBurned} cal
+                150 cal
               </div>
             </div>
           </div>
@@ -99,28 +99,31 @@ const ExerciseCard = ({
 
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-medium">{title}</DialogTitle>
+          <DialogTitle className="text-xl font-medium">{exercise.name}</DialogTitle>
           <DialogDescription className="text-ufit-secondary">
-            {type} • {duration} min • {caloriesBurned} calories
+            {exercise.category} • {exercise.muscle} • {exercise.equipment}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
           <img
-            src={imageUrl}
-            alt={title}
+            src={exercise.imageUrl}
+            alt={exercise.name}
             className="w-full h-56 object-cover rounded-lg"
           />
 
           <div>
             <h4 className="font-medium text-ufit-primary mb-2">Description</h4>
-            <p className="text-ufit-secondary text-sm">{description}</p>
+            <p className="text-ufit-secondary text-sm">
+              {exercise.name} is a {exercise.difficulty} level {exercise.category} exercise 
+              that targets the {exercise.muscle} using {exercise.equipment}.
+            </p>
           </div>
 
           <div>
             <h4 className="font-medium text-ufit-primary mb-2">Instructions</h4>
             <ol className="space-y-2">
-              {steps.map((step, index) => (
+              {instructionSteps.map((step, index) => (
                 <li key={index} className="flex items-start space-x-2">
                   <span className="flex-shrink-0 h-5 w-5 bg-ufit-accent/10 rounded-full flex items-center justify-center mt-0.5">
                     <Check className="h-3 w-3 text-ufit-accent" />
@@ -133,12 +136,12 @@ const ExerciseCard = ({
 
           <div className="flex justify-end space-x-3 pt-2">
             <Button
-              onClick={toggleSave}
+              onClick={handleSaveClick}
               variant="outline"
               className="ufit-button-secondary"
             >
-              {saved ? "Saved" : "Save"}
-              {saved ? (
+              {isFavorite ? "Saved" : "Save"}
+              {isFavorite ? (
                 <Bookmark className="h-4 w-4 ml-2" fill="#9b87f5" />
               ) : (
                 <Bookmark className="h-4 w-4 ml-2" />
