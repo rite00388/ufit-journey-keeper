@@ -9,7 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface Exercise {
   id: string;
@@ -33,6 +35,8 @@ const ExerciseCard = ({
   isFavorite,
   onToggleFavorite,
 }: ExerciseCardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const getDifficultyColor = () => {
     if (exercise.difficulty === "beginner") return "bg-green-100 text-green-800";
     if (exercise.difficulty === "intermediate") return "bg-yellow-100 text-yellow-800";
@@ -45,11 +49,19 @@ const ExerciseCard = ({
     onToggleFavorite();
   };
 
+  const handleStartExercise = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast.success(`Started ${exercise.name} exercise!`, {
+      description: "Your workout session has begun. Keep going!",
+    });
+    setIsOpen(false);
+  };
+
   // Convert instructions text to steps array for rendering
   const instructionSteps = exercise.instructions.split('. ').filter(step => step.trim() !== '');
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="ufit-card cursor-pointer h-full flex flex-col">
           <div className="relative">
@@ -147,7 +159,14 @@ const ExerciseCard = ({
                 <Bookmark className="h-4 w-4 ml-2" />
               )}
             </Button>
-            <Button className="ufit-button-primary">Start Exercise</Button>
+            <DialogClose asChild>
+              <Button 
+                className="ufit-button-primary"
+                onClick={handleStartExercise}
+              >
+                Start Exercise
+              </Button>
+            </DialogClose>
           </div>
         </div>
       </DialogContent>
