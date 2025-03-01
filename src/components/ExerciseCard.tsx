@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Clock, Flame, Bookmark, Check } from "lucide-react";
+import { Clock, Flame, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,27 +9,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-interface Exercise {
-  id: string;
-  name: string;
-  category: string;
-  muscle: string;
-  equipment: string;
-  difficulty: "beginner" | "intermediate" | "advanced";
-  instructions: string;
-  imageUrl: string;
-  gifUrl: string; // Changed from videoUrl to gifUrl
-}
+// Import types and utility functions
+import { ExerciseCardProps } from "@/types/exercise";
+import { getDifficultyColor } from "@/utils/exerciseUtils";
 
-interface ExerciseCardProps {
-  exercise: Exercise;
-  isFavorite: boolean;
-  onToggleFavorite: () => void;
-}
+// Import sub-components
+import ExerciseMedia from "@/components/exercise/ExerciseMedia";
+import ExerciseInstructions from "@/components/exercise/ExerciseInstructions";
+import ExerciseActions from "@/components/exercise/ExerciseActions";
 
 const ExerciseCard = ({
   exercise,
@@ -37,13 +27,7 @@ const ExerciseCard = ({
   onToggleFavorite,
 }: ExerciseCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showGif, setShowGif] = useState(false); // Changed from showVideo to showGif
-
-  const getDifficultyColor = () => {
-    if (exercise.difficulty === "beginner") return "bg-green-100 text-green-800";
-    if (exercise.difficulty === "intermediate") return "bg-yellow-100 text-yellow-800";
-    return "bg-red-100 text-red-800";
-  };
+  const [showGif, setShowGif] = useState(false);
 
   const handleSaveClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,15 +37,12 @@ const ExerciseCard = ({
 
   const handleStartExercise = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowGif(true); // Changed from setShowVideo to setShowGif
+    setShowGif(true);
     
     toast.success(`Started ${exercise.name} exercise!`, {
       description: "Your workout session has begun. Follow along with the animation.",
     });
   };
-
-  // Convert instructions text to steps array for rendering
-  const instructionSteps = exercise.instructions.split('. ').filter(step => step.trim() !== '');
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -87,7 +68,7 @@ const ExerciseCard = ({
             </Button>
             <div className="absolute bottom-2 left-2">
               <span
-                className={`text-xs font-medium px-2.5 py-1 rounded-full ${getDifficultyColor()}`}
+                className={`text-xs font-medium px-2.5 py-1 rounded-full ${getDifficultyColor(exercise.difficulty)}`}
               >
                 {exercise.difficulty}
               </span>
@@ -121,75 +102,28 @@ const ExerciseCard = ({
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
-          {showGif ? (
-            <div className="relative">
-              <img 
-                src={exercise.gifUrl} 
-                alt={`${exercise.name} demonstration`}
-                className="w-full h-56 object-contain rounded-lg bg-gray-50"
-              />
-            </div>
-          ) : (
-            <img
-              src={exercise.imageUrl}
-              alt={exercise.name}
-              className="w-full h-56 object-cover rounded-lg"
-            />
-          )}
+          <ExerciseMedia 
+            showGif={showGif}
+            imageUrl={exercise.imageUrl}
+            gifUrl={exercise.gifUrl}
+            name={exercise.name}
+          />
 
-          <div>
-            <h4 className="font-medium text-ufit-primary mb-2">Description</h4>
-            <p className="text-ufit-secondary text-sm">
-              {exercise.name} is a {exercise.difficulty} level {exercise.category} exercise 
-              that targets the {exercise.muscle} using {exercise.equipment}.
-            </p>
-          </div>
+          <ExerciseInstructions 
+            name={exercise.name}
+            difficulty={exercise.difficulty}
+            category={exercise.category}
+            muscle={exercise.muscle}
+            equipment={exercise.equipment}
+            instructions={exercise.instructions}
+          />
 
-          <div>
-            <h4 className="font-medium text-ufit-primary mb-2">Instructions</h4>
-            <ol className="space-y-2">
-              {instructionSteps.map((step, index) => (
-                <li key={index} className="flex items-start space-x-2">
-                  <span className="flex-shrink-0 h-5 w-5 bg-ufit-accent/10 rounded-full flex items-center justify-center mt-0.5">
-                    <Check className="h-3 w-3 text-ufit-accent" />
-                  </span>
-                  <span className="text-sm text-ufit-secondary">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-2">
-            <Button
-              onClick={handleSaveClick}
-              variant="outline"
-              className="ufit-button-secondary"
-            >
-              {isFavorite ? "Saved" : "Save"}
-              {isFavorite ? (
-                <Bookmark className="h-4 w-4 ml-2" fill="#9b87f5" />
-              ) : (
-                <Bookmark className="h-4 w-4 ml-2" />
-              )}
-            </Button>
-            {!showGif ? (
-              <Button 
-                className="ufit-button-primary"
-                onClick={handleStartExercise}
-              >
-                Start Exercise
-              </Button>
-            ) : (
-              <DialogClose asChild>
-                <Button 
-                  variant="outline"
-                  className="ufit-button-secondary"
-                >
-                  Close
-                </Button>
-              </DialogClose>
-            )}
-          </div>
+          <ExerciseActions 
+            isFavorite={isFavorite}
+            showGif={showGif}
+            onToggleFavorite={handleSaveClick}
+            onStartExercise={handleStartExercise}
+          />
         </div>
       </DialogContent>
     </Dialog>
