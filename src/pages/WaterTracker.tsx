@@ -89,8 +89,7 @@ const WaterTracker = () => {
                 value={percentComplete} 
                 className="h-3 bg-blue-100" 
                 style={{ 
-                  backgroundColor: "#e0f2fe", 
-                  "--tw-bg-opacity": 0.7,
+                  backgroundColor: "#e0f2fe"
                 }}
               />
             </div>
@@ -178,7 +177,8 @@ const WaterTracker = () => {
               </ul>
             </Card>
             
-            <WaterIntake history={intakeHistory} />
+            {/* The WaterIntake component doesn't accept history prop */}
+            <WaterIntake />
           </div>
         </div>
       </div>
