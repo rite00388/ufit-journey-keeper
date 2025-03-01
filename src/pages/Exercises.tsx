@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,7 @@ interface Exercise {
   difficulty: "beginner" | "intermediate" | "advanced";
   instructions: string;
   imageUrl: string;
+  videoUrl: string; // Added video URL field
 }
 
 // Example exercise data
@@ -28,7 +30,8 @@ const exercisesData: Exercise[] = [
     equipment: "bodyweight",
     difficulty: "beginner",
     instructions: "Place your hands on the ground slightly wider than shoulder-width apart. Keep your body in a straight line from head to toe. Lower your body until your chest nearly touches the floor, then push yourself back up.",
-    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/414191756/7778.mp4?width=640&hash=e49b09e8c50ecfbc201df33c355a39d4c0f69001"
   },
   {
     id: "ex2",
@@ -38,7 +41,8 @@ const exercisesData: Exercise[] = [
     equipment: "bodyweight",
     difficulty: "beginner",
     instructions: "Stand with feet shoulder-width apart. Bend your knees and lower your hips as if sitting in a chair. Keep your chest up and knees over (not past) your toes. Return to standing position.",
-    imageUrl: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/322319024/11966.mp4?width=640&hash=81d3a116374e62bfc60f07acf1e0114be95c9384"
   },
   {
     id: "ex3",
@@ -48,7 +52,8 @@ const exercisesData: Exercise[] = [
     equipment: "bodyweight",
     difficulty: "beginner",
     instructions: "Get into a push-up position, but with your weight on your forearms. Keep your body in a straight line from head to heels. Engage your core and hold the position.",
-    imageUrl: "https://images.unsplash.com/photo-1566241142404-6c2bb4201a30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1566241142404-6c2bb4201a30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/461370072/29095.mp4?width=640&hash=1e2c93dcecbe4bf6df9ea306cc0e3ce1f6952a2d"
   },
   {
     id: "ex4",
@@ -58,7 +63,8 @@ const exercisesData: Exercise[] = [
     equipment: "bodyweight",
     difficulty: "beginner",
     instructions: "Stand with feet hip-width apart. Step forward with one leg and lower your body until both knees are bent at 90-degree angles. Push back to starting position and repeat with the other leg.",
-    imageUrl: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/446187282/23963.mp4?width=640&hash=a783e9a9e0cb546b23e066ad69b84a0ecac5ba58"
   },
   {
     id: "ex5",
@@ -68,7 +74,8 @@ const exercisesData: Exercise[] = [
     equipment: "dumbbell",
     difficulty: "intermediate",
     instructions: "Lie on a bench with a dumbbell in each hand. Push the dumbbells up until your arms are extended, then lower them back to chest level.",
-    imageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/449013499/24838.mp4?width=640&hash=bb3fa724c15d0a19374c28cd41ff7d4d2c301de7"
   },
   {
     id: "ex6",
@@ -78,7 +85,8 @@ const exercisesData: Exercise[] = [
     equipment: "none",
     difficulty: "beginner",
     instructions: "Run at a steady pace, maintaining good posture with your back straight and shoulders relaxed. Land on the middle of your foot and roll forward to push off with your toes.",
-    imageUrl: "https://images.unsplash.com/photo-1486218119243-13883505764c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1472&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1486218119243-13883505764c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1472&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/385440174/22391.mp4?width=640&hash=a35812df9f1ac2ee3d2c33ad27fd931b4f740ae6"
   },
   {
     id: "ex7",
@@ -88,7 +96,8 @@ const exercisesData: Exercise[] = [
     equipment: "bicycle",
     difficulty: "beginner",
     instructions: "Adjust the seat height so your legs are almost fully extended at the bottom of the pedal stroke. Maintain a steady cadence and control your breathing.",
-    imageUrl: "https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/345348999/16534.mp4?width=640&hash=cf14b42c06f9e5a5f4da8c2d36a41b5b8e7f2e9c"
   },
   {
     id: "ex8",
@@ -98,7 +107,8 @@ const exercisesData: Exercise[] = [
     equipment: "none",
     difficulty: "beginner",
     instructions: "Stand with your feet together and arms at your sides. Jump to spread your feet shoulder-width apart while raising your arms above your head. Jump back to the starting position.",
-    imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    videoUrl: "https://cdn.pixabay.com/vimeo/328889633/13082.mp4?width=640&hash=4f0876b42c4b1eb20ae07bc3294d5de71aafa3ac"
   }
 ];
 
