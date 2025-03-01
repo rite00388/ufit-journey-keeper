@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
-import { Clock, Flame, Bookmark, Check, Play, Pause } from "lucide-react";
+
+import { useState } from "react";
+import { Clock, Flame, Bookmark, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,7 +22,7 @@ interface Exercise {
   difficulty: "beginner" | "intermediate" | "advanced";
   instructions: string;
   imageUrl: string;
-  videoUrl: string;
+  gifUrl: string; // Changed from videoUrl to gifUrl
 }
 
 interface ExerciseCardProps {
@@ -36,9 +37,7 @@ const ExerciseCard = ({
   onToggleFavorite,
 }: ExerciseCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [showGif, setShowGif] = useState(false); // Changed from showVideo to showGif
 
   const getDifficultyColor = () => {
     if (exercise.difficulty === "beginner") return "bg-green-100 text-green-800";
@@ -54,23 +53,11 @@ const ExerciseCard = ({
 
   const handleStartExercise = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowVideo(true);
-    setIsPlaying(true);
+    setShowGif(true); // Changed from setShowVideo to setShowGif
     
     toast.success(`Started ${exercise.name} exercise!`, {
-      description: "Your workout session has begun. Follow along with the video.",
+      description: "Your workout session has begun. Follow along with the animation.",
     });
-  };
-
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
   };
 
   // Convert instructions text to steps array for rendering
@@ -134,29 +121,13 @@ const ExerciseCard = ({
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
-          {showVideo ? (
+          {showGif ? (
             <div className="relative">
-              <video 
-                ref={videoRef}
-                src={exercise.videoUrl} 
-                className="w-full h-56 object-cover rounded-lg"
-                autoPlay 
-                controls
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+              <img 
+                src={exercise.gifUrl} 
+                alt={`${exercise.name} demonstration`}
+                className="w-full h-56 object-contain rounded-lg bg-gray-50"
               />
-              <Button
-                onClick={togglePlayPause}
-                variant="outline"
-                size="icon"
-                className="absolute bottom-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white"
-              >
-                {isPlaying ? (
-                  <Pause className="h-5 w-5" />
-                ) : (
-                  <Play className="h-5 w-5" />
-                )}
-              </Button>
             </div>
           ) : (
             <img
@@ -201,7 +172,7 @@ const ExerciseCard = ({
                 <Bookmark className="h-4 w-4 ml-2" />
               )}
             </Button>
-            {!showVideo ? (
+            {!showGif ? (
               <Button 
                 className="ufit-button-primary"
                 onClick={handleStartExercise}
